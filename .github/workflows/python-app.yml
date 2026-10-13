@@ -1,7 +1,9 @@
-name: First CI Pipeline
+name: Build and Analyze
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -10,9 +12,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check Python
         run: python --version
 
       - name: Run program
         run: python hello.py
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
